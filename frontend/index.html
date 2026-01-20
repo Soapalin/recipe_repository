@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f2d2e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Share Catcher" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <title>Share Catcher PWA</title>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">Share Target PWA</p>
+      <h1>Catch links from the iOS share sheet.</h1>
+      <p class="lead">
+        Install this app to your home screen. Then share any URL to this app from Safari or another app.
+      </p>
+      <div class="actions">
+        <button id="install-btn" type="button" hidden>Install PWA</button>
+        <a class="secondary" href="/share-target.html">Open share target</a>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Last shared URL</h2>
+      <p id="last-url" class="mono">Nothing shared yet.</p>
+      <p id="last-title" class="muted"></p>
+    </section>
+
+    <section class="panel">
+      <h2>How it works</h2>
+      <ol>
+        <li>Add this app to your home screen in Safari.</li>
+        <li>Open any page and tap Share.</li>
+        <li>Pick this app to send the URL here.</li>
+      </ol>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
+
