@@ -51,6 +51,7 @@ def _is_allowed_origin(value: str) -> bool:
 
 def _enforce_origin() -> None:
     origin = request.headers.get("Origin")
+    print(f"origin: {origin}")
     referer = request.headers.get("Referer")
 
     if origin:
@@ -68,27 +69,19 @@ def _enforce_origin() -> None:
 
 @recipe_api.route("/share", methods=["POST"])
 def share() -> Any:
-    try:
-        _enforce_origin()
-    except PermissionError as exc:
-        logging.error("PermissionError: %s", exc)
-        return jsonify(ok=False, error=str(exc)), 403
+    # try:
+    #     _enforce_origin()
+    # except PermissionError as exc:
+    #     logging.error("PermissionError: %s", exc)
+    #     return jsonify(ok=False, error=str(exc)), 403
     
-
-
     payload = _collect_payload()
-    logging.info("Received payload: %s", payload)
-
-    schema = RecipeSchema()
-    try:
-        logger.info("RecipeSchema Checking payload: %s", payload)
-        data = schema.load(payload)
-    except ValidationError as err:
-        return jsonify({"errors": err.messages}), 400
+    logging.info("Received payload: %s, %s", payload, type(payload))
 
     try:
         response = requests.post(N8N_WEBHOOK_URL, json=payload, timeout=10)
     except requests.RequestException as exc:
         return jsonify(ok=False, error=str(exc)), 502
+    
+    logger.info(response.text)
     return jsonify(ok=response.ok, status=response.status_code)
-    # return jsonify(ok=True, status=200)

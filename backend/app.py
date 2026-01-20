@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from recipe_api import recipe_api
 from flask_cors import CORS
 from flask_limiter import Limiter
@@ -28,7 +28,7 @@ limiter.limit("30 per hour")(recipe_api)
 FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN")
 CORS(
     app,
-    resources={r"/share": {"origins": [FRONTEND_ORIGIN]}},
+    resources={r"/": {"origins": [FRONTEND_ORIGIN]}},
     supports_credentials=False,
 )
 
@@ -37,8 +37,12 @@ CORS(
 def health() -> Any:
     return jsonify(status="ok")
 
+@app.route("/test", methods=["POST"])
+def test() -> Any:
+    logger.info(request.json)
+    return jsonify(status="ok")
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "9999")))
-    print("test")
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", "9998")))
 
