@@ -1,0 +1,94 @@
+from urllib.parse import urlparse
+from flask import Blueprint, jsonify, request
+from marshmallow import ValidationError
+import requests
+
+from typing import Any, Dict
+from dotenv import load_dotenv
+
+from schema.recipe import RecipeSchema
+load_dotenv()
+import os
+
+FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN")
+N8N_WEBHOOK_URL = os.getenv("N8N_URL")
+
+
+import logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+
+recipe_api = Blueprint("recipe", __name__, url_prefix="/recipe")
+
+def _collect_payload() -> Dict[str, Any]:
+    logger.info("request.is_json: %s", request.is_json)
+    logger.info("request.form: %s", request.form)
+    logger.info("request.data: %s", request.data)
+    if request.is_json:
+        data = request.get_json(silent=True) or {}
+        if isinstance(data, dict):
+            return data
+        return {"payload": data}
+
+    if request.form:
+        return request.form.to_dict(flat=True)
+
+    if request.data:
+        return {"raw": request.data.decode("utf-8", errors="replace")}
+
+    return {}
+
+
+def _is_allowed_origin(value: str) -> bool:
+    try:
+        parsed = urlparse(value)
+        origin = f"{parsed.scheme}://{parsed.netloc}"
+        return origin == FRONTEND_ORIGIN
+    except Exception:
+        return False
+
+
+def _enforce_origin() -> None:
+    origin = request.headers.get("Origin")
+    referer = request.headers.get("Referer")
+
+    if origin:
+        if not _is_allowed_origin(origin):
+            raise PermissionError("Origin not allowed")
+        return
+
+    if referer:
+        if not _is_allowed_origin(referer):
+            raise PermissionError("Referer not allowed")
+        return
+
+    raise PermissionError("Missing Origin/Referer")
+
+
+@recipe_api.route("/share", methods=["POST"])
+def share() -> Any:
+    try:
+        _enforce_origin()
+    except PermissionError as exc:
+        logging.error("PermissionError: %s", exc)
+        return jsonify(ok=False, error=str(exc)), 403
+    
+
+
+    payload = _collect_payload()
+    logging.info("Received payload: %s", payload)
+
+    schema = RecipeSchema()
+    try:
+        logger.info("RecipeSchema Checking payload: %s", payload)
+        data = schema.load(payload)
+    except ValidationError as err:
+        return jsonify({"errors": err.messages}), 400
+
+    try:
+        response = requests.post(N8N_WEBHOOK_URL, json=payload, timeout=10)
+    except requests.RequestException as exc:
+        return jsonify(ok=False, error=str(exc)), 502
+    return jsonify(ok=response.ok, status=response.status_code)
+    # return jsonify(ok=True, status=200)
