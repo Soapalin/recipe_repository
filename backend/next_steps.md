@@ -4,6 +4,7 @@ PART 1: Authenticate Cloudflare Tunnel
 
 ```
 docker run -it --rm cloudflare/cloudflared:latest tunnel login
+docker run -it --rm cloudflare/cloudflared:latest tunnel create recipe-api
 ```
 
 PART 2: Create a tunnel

@@ -69,11 +69,6 @@ def _enforce_origin() -> None:
 
 @recipe_api.route("/share", methods=["POST"])
 def share() -> Any:
-    # try:
-    #     _enforce_origin()
-    # except PermissionError as exc:
-    #     logging.error("PermissionError: %s", exc)
-    #     return jsonify(ok=False, error=str(exc)), 403
     
     payload = _collect_payload()
     logging.info("Received payload: %s, %s", payload, type(payload))
