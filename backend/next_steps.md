@@ -53,3 +53,11 @@ https://api.yourdomain.com/health
 ```
 
 
+
+TODO:
+[] Get API token for personal use and add support to it to backend
+[] n8n sort out how to extract the recipe with AI
+[] add postgresql to the backend
+[] create frontend that shows all recipes
+
+
