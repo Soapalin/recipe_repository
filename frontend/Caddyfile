@@ -1,4 +1,8 @@
 :80 {
+  handle_path /api* {
+    reverse_proxy backend:9998
+  }
+
   handle_path /images/* {
     root * /srv/images
     file_server
