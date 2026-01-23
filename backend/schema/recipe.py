@@ -10,6 +10,7 @@ class Recipe(Base):
     title = Column(Text, nullable=False)
     url = Column(Text, nullable=True)
     author = Column(Text, nullable=True)
+    img_path = Column(Text, nullable=True)
     description = Column(Text, nullable=True)
     time_taken = Column(Integer, nullable=True)# in minutes
     servings = Column(Integer, nullable=True)

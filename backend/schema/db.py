@@ -2,7 +2,9 @@ import os
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+from dotenv import load_dotenv
 
+load_dotenv()
 
 def _build_database_url() -> str:
     explicit_url = os.getenv("DATABASE_URL")
@@ -13,7 +15,7 @@ def _build_database_url() -> str:
     port = os.getenv("DB_PORT", "5432")
     name = os.getenv("DB_NAME", "recipes")
     user = os.getenv("DB_USER", "recipes")
-    password = os.getenv("DB_PASSWORD", "recipes")
+    password = os.getenv("DB_PASSWORD")
     return f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}"
 
 
