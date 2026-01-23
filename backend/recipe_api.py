@@ -87,6 +87,8 @@ def _serialize_recipe(recipe: Recipe) -> Dict[str, Any]:
     return {
         "id": recipe.id,
         "title": recipe.title,
+        "url": recipe.url,
+        "author": recipe.author,
         "description": recipe.description,
         "ingredients": recipe.ingredients,
         "instructions": recipe.instructions,
@@ -98,7 +100,7 @@ def _serialize_recipe(recipe: Recipe) -> Dict[str, Any]:
 
 
 def _apply_recipe_updates(recipe: Recipe, payload: Dict[str, Any]) -> None:
-    for field in ("title", "description", "ingredients", "instructions"):
+    for field in ("title", "url", "author", "description", "ingredients", "instructions"):
         if field in payload:
             setattr(recipe, field, payload.get(field))
 
@@ -136,6 +138,8 @@ def create_recipe() -> Any:
     try:
         recipe = Recipe(
             title=title,
+            url=payload.get("url"),
+            author=payload.get("author"),
             description=payload.get("description"),
             ingredients=payload.get("ingredients"),
             instructions=payload.get("instructions"),
