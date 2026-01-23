@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recipe Shelf</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Weekly rotation</p>
+          <h1>Recipe Shelf</h1>
+          <p class="subhead">Tap a recipe to open the full ingredients, steps, and notes.</p>
+        </div>
+        <div class="hero-chip">
+          <span>Seasonal picks</span>
+          <strong>3</strong>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="list-view" id="listView">
+          <div class="section-header">
+            <h2>All recipes</h2>
+            <p class="muted">Click a card to open the full recipe.</p>
+          </div>
+          <div class="card-grid" id="recipeList"></div>
+        </section>
+
+        <section class="detail-view" id="detailView" aria-live="polite">
+          <button class="back-button" id="backButton">Back to list</button>
+          <div class="detail-card" id="detailCard"></div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js" defer></script>
+  </body>
+</html>

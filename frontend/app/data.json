@@ -1,0 +1,99 @@
+[
+  {
+    "id": "lemon-herb-chicken",
+    "title": "Lemon Herb Sheet-Pan Chicken",
+    "author": "Mara Lewis",
+    "url": "https://example.com/recipes/lemon-herb-chicken",
+    "summary": "Bright, herby chicken with blistered veggies and a quick pan sauce.",
+    "time": "45 min",
+    "servings": 4,
+    "tags": [
+      "Weeknight",
+      "Citrus",
+      "One-pan"
+    ],
+    "image": "lemon-herb-chicken.svg",
+    "ingredients": [
+      "1.5 lb chicken thighs, bone-in",
+      "2 cups baby potatoes, halved",
+      "1 red onion, wedges",
+      "1 lemon, sliced",
+      "2 tbsp olive oil",
+      "2 tsp chopped rosemary",
+      "2 cloves garlic, minced",
+      "Salt + pepper"
+    ],
+    "steps": [
+      "Heat oven to 425°F (220°C).",
+      "Toss potatoes, onion, and lemon with olive oil, garlic, salt, and pepper.",
+      "Nestle chicken thighs on the tray and sprinkle with rosemary.",
+      "Roast for 35-40 minutes until chicken is golden and cooked through.",
+      "Spoon pan juices over everything and serve warm."
+    ],
+    "notes": "Swap in zucchini or fennel for the vegetables if you have them."
+  },
+  {
+    "id": "ginger-lime-salmon",
+    "title": "Ginger-Lime Glazed Salmon",
+    "author": "Jun Park",
+    "url": "https://example.com/recipes/ginger-lime-salmon",
+    "summary": "Sticky-sweet glaze with crisp snap peas and fragrant rice.",
+    "time": "30 min",
+    "servings": 2,
+    "tags": [
+      "Fast",
+      "Seafood",
+      "Bright"
+    ],
+    "image": "ginger-lime-salmon.svg",
+    "ingredients": [
+      "2 salmon fillets",
+      "1 tbsp soy sauce",
+      "1 tbsp honey",
+      "1 tsp grated ginger",
+      "1 lime, zested and juiced",
+      "2 cups snap peas",
+      "1 tbsp sesame oil",
+      "Cooked jasmine rice"
+    ],
+    "steps": [
+      "Whisk soy sauce, honey, ginger, lime zest, and lime juice.",
+      "Sear salmon skin-side down for 4 minutes, flip, and glaze.",
+      "Add snap peas to the pan and cook until crisp-tender.",
+      "Spoon extra glaze over salmon and serve with rice."
+    ],
+    "notes": "Use maple syrup instead of honey for a deeper sweetness."
+  },
+  {
+    "id": "roasted-vegetable-orzo",
+    "title": "Roasted Vegetable Orzo",
+    "author": "Sofia Costa",
+    "url": "https://example.com/recipes/roasted-vegetable-orzo",
+    "summary": "Toasty orzo tossed with roasted squash, basil, and feta.",
+    "time": "40 min",
+    "servings": 4,
+    "tags": [
+      "Vegetarian",
+      "Comfort",
+      "Meal prep"
+    ],
+    "image": "roasted-vegetable-orzo.svg",
+    "ingredients": [
+      "1 small butternut squash, diced",
+      "1 red bell pepper, sliced",
+      "1 zucchini, sliced",
+      "2 tbsp olive oil",
+      "1 cup orzo",
+      "1/2 cup crumbled feta",
+      "Handful basil leaves",
+      "Salt + pepper"
+    ],
+    "steps": [
+      "Roast squash, pepper, and zucchini at 400°F (200°C) for 20 minutes.",
+      "Cook orzo until al dente and drain.",
+      "Toss orzo with roasted vegetables, olive oil, salt, and pepper.",
+      "Fold in feta and basil right before serving."
+    ],
+    "notes": "Add toasted pine nuts for extra crunch."
+  }
+]
