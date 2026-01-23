@@ -90,6 +90,8 @@ def _serialize_recipe(recipe: Recipe) -> Dict[str, Any]:
         "url": recipe.url,
         "author": recipe.author,
         "description": recipe.description,
+        "time_taken": recipe.time_taken,
+        "servings": recipe.servings,
         "ingredients": recipe.ingredients,
         "instructions": recipe.instructions,
         "created_at": recipe.created_at.isoformat() if recipe.created_at else None,
@@ -100,7 +102,16 @@ def _serialize_recipe(recipe: Recipe) -> Dict[str, Any]:
 
 
 def _apply_recipe_updates(recipe: Recipe, payload: Dict[str, Any]) -> None:
-    for field in ("title", "url", "author", "description", "ingredients", "instructions"):
+    for field in (
+        "title",
+        "url",
+        "author",
+        "description",
+        "time_taken",
+        "servings",
+        "ingredients",
+        "instructions",
+    ):
         if field in payload:
             setattr(recipe, field, payload.get(field))
 
@@ -141,6 +152,8 @@ def create_recipe() -> Any:
             url=payload.get("url"),
             author=payload.get("author"),
             description=payload.get("description"),
+            time_taken=payload.get("time_taken"),
+            servings=payload.get("servings"),
             ingredients=payload.get("ingredients"),
             instructions=payload.get("instructions"),
         )
