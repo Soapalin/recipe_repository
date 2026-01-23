@@ -1,7 +1,19 @@
-from marshmallow import Schema, fields, validate, ValidationError
+from sqlalchemy import Column, DateTime, Integer, Text, func
 
-class RecipeSchema(Schema):
-    title = fields.Str(required=True, validate=validate.Length(min=1, max=100))
-    text = fields.Str()
-    url = fields.Url()
-    receivedAt = fields.Str()
+from schema.db import Base
+
+
+class Recipe(Base):
+    __tablename__ = "recipes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(Text, nullable=False)
+    description = Column(Text, nullable=True)
+    ingredients = Column(Text, nullable=True)
+    instructions = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
