@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#ffe1b3" />
+      <stop offset="100%" stop-color="#f2b06d" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#g)" />
+  <circle cx="620" cy="150" r="90" fill="#fff4d6" />
+  <circle cx="640" cy="140" r="16" fill="#f7d36c" />
+  <circle cx="600" cy="180" r="14" fill="#f7d36c" />
+  <rect x="80" y="120" width="460" height="260" rx="48" fill="#fff8ec" />
+  <text x="120" y="210" font-size="36" fill="#8a4a2b" font-family="Palatino Linotype, serif">Lemon Herb</text>
+  <text x="120" y="260" font-size="28" fill="#b25c3a" font-family="Palatino Linotype, serif">Sheet-Pan Chicken</text>
+  <rect x="120" y="300" width="220" height="14" rx="7" fill="#6c8b5c" />
+  <rect x="120" y="330" width="180" height="14" rx="7" fill="#6c8b5c" />
+</svg>

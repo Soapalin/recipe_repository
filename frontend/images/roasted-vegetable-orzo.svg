@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f6e0c7" />
+      <stop offset="100%" stop-color="#e3b48b" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#g)" />
+  <circle cx="640" cy="360" r="90" fill="#fff3e6" />
+  <circle cx="640" cy="360" r="24" fill="#f3c787" />
+  <rect x="90" y="120" width="520" height="260" rx="48" fill="#fffaf4" />
+  <text x="130" y="220" font-size="36" fill="#8a4a2b" font-family="Palatino Linotype, serif">Roasted Veg</text>
+  <text x="130" y="270" font-size="28" fill="#b0633e" font-family="Palatino Linotype, serif">Orzo</text>
+  <rect x="130" y="310" width="220" height="14" rx="7" fill="#6c8b5c" />
+  <rect x="130" y="340" width="180" height="14" rx="7" fill="#6c8b5c" />
+</svg>
