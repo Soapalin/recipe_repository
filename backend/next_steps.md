@@ -68,3 +68,22 @@ NEXT STEPS:
 docker run -it --rm cloudflare/cloudflared:latest tunnel route dns recipe-app recipe.domain.com
 ```
 
+
+use caddy to change the flask API to use /api in recipe.
+```
+tunnel: 916b4f0b-433b-4ea4-b053-be4fc2277d14
+credentials-file: /etc/cloudflared/credentials.json
+
+ingress:
+  - hostname: recipe.lucientran.com
+    service: http://caddy:80
+
+
+  - service: http_status:404
+```
+
+In root directory:
+```
+docker-compose up --build
+```
+
