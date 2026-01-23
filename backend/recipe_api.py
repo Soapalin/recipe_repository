@@ -15,7 +15,7 @@ import os
 FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN")
 N8N_WEBHOOK_URL = os.getenv("N8N_URL")
 SHORTCUTS_API_TOKEN = os.getenv("SHORTCUTS_API_TOKEN")
-
+DB_API_TOKEN = os.getenv("DB_API_TOKEN")
 
 import logging
 logger = logging.getLogger(__name__)
@@ -70,7 +70,7 @@ def _enforce_origin() -> None:
     raise PermissionError("Missing Origin/Referer")
 
 
-def _require_bearer_token() -> None:
+def _require_shortcuts_bearer_token() -> None:
     if not SHORTCUTS_API_TOKEN:
         raise RuntimeError("SHORTCUTS_API_TOKEN is not configured")
 
@@ -80,6 +80,18 @@ def _require_bearer_token() -> None:
 
     token = auth_header.removeprefix("Bearer ").strip()
     if not hmac.compare_digest(token, SHORTCUTS_API_TOKEN):
+        raise PermissionError("Invalid Bearer token")
+
+def _require_db_bearer_token() -> None:
+    if not DB_API_TOKEN:
+        raise RuntimeError("SHORTCUTS_API_TOKEN is not configured")
+
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        raise PermissionError("Missing Bearer token")
+
+    token = auth_header.removeprefix("Bearer ").strip()
+    if not hmac.compare_digest(token, DB_API_TOKEN):
         raise PermissionError("Invalid Bearer token")
 
 
@@ -119,7 +131,7 @@ def _apply_recipe_updates(recipe: Recipe, payload: Dict[str, Any]) -> None:
 @recipe_api.route("/share", methods=["POST"])
 def share() -> Any:
     try:
-        _require_bearer_token()
+        _require_shortcuts_bearer_token()
     except PermissionError as exc:
         return jsonify(ok=False, error=str(exc)), 401
     except RuntimeError as exc:
@@ -132,13 +144,20 @@ def share() -> Any:
         response = requests.post(N8N_WEBHOOK_URL, json=payload, timeout=10)
     except requests.RequestException as exc:
         return jsonify(ok=False, error=str(exc)), 502
-    
+
     logger.info(response.text)
     return jsonify(ok=response.ok, status=response.status_code)
 
 
 @recipe_api.route("", methods=["POST"])
 def create_recipe() -> Any:
+    try:
+        _require_db_bearer_token()
+    except PermissionError as exc:
+        return jsonify(ok=False, error=str(exc)), 401
+    except RuntimeError as exc:
+        return jsonify(ok=False, error=str(exc)), 500
+
     payload = _collect_payload()
     print(payload)
     title = payload.get("title")
@@ -199,6 +218,14 @@ def get_recipe(recipe_id: int) -> Any:
 
 @recipe_api.route("/<int:recipe_id>", methods=["PUT"])
 def update_recipe(recipe_id: int) -> Any:
+
+    try:
+        _require_db_bearer_token()
+    except PermissionError as exc:
+        return jsonify(ok=False, error=str(exc)), 401
+    except RuntimeError as exc:
+        return jsonify(ok=False, error=str(exc)), 500
+
     payload = _collect_payload()
     if not payload:
         return jsonify(ok=False, error="No updates provided"), 400
