@@ -1,4 +1,4 @@
-﻿
+
 import os
 from typing import Any
 from dotenv import load_dotenv
@@ -10,13 +10,14 @@ from recipe_api import recipe_api
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-
+from schema.db import init_db
 
 import logging
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.register_blueprint(recipe_api)
+init_db()
 
 limiter = Limiter(
     get_remote_address,
@@ -45,4 +46,3 @@ def test() -> Any:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", "9998")))
-

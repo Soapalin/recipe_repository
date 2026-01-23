@@ -3,8 +3,10 @@ from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
 import requests
 import hmac
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from dotenv import load_dotenv
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
 
 # from schema.recipe import RecipeSchema
 load_dotenv()
@@ -21,6 +23,9 @@ logging.basicConfig(level=logging.INFO)
 
 
 recipe_api = Blueprint("recipe", __name__, url_prefix="/recipe")
+
+from schema.db import SessionLocal
+from schema.recipe import Recipe
 
 def _collect_payload() -> Dict[str, Any]:
     logger.info("request.is_json: %s", request.is_json)
@@ -78,6 +83,26 @@ def _require_bearer_token() -> None:
         raise PermissionError("Invalid Bearer token")
 
 
+def _serialize_recipe(recipe: Recipe) -> Dict[str, Any]:
+    return {
+        "id": recipe.id,
+        "title": recipe.title,
+        "description": recipe.description,
+        "ingredients": recipe.ingredients,
+        "instructions": recipe.instructions,
+        "created_at": recipe.created_at.isoformat() if recipe.created_at else None,
+        "updated_at": recipe.updated_at.isoformat() if recipe.updated_at else None,
+    }
+
+
+
+
+def _apply_recipe_updates(recipe: Recipe, payload: Dict[str, Any]) -> None:
+    for field in ("title", "description", "ingredients", "instructions"):
+        if field in payload:
+            setattr(recipe, field, payload.get(field))
+
+
 @recipe_api.route("/share", methods=["POST"])
 def share() -> Any:
     try:
@@ -97,3 +122,100 @@ def share() -> Any:
     
     logger.info(response.text)
     return jsonify(ok=response.ok, status=response.status_code)
+
+
+@recipe_api.route("", methods=["POST"])
+def create_recipe() -> Any:
+    payload = _collect_payload()
+    print(payload)
+    title = payload.get("title")
+    if not title:
+        return jsonify(ok=False, error="title is required"), 400
+
+    session: Session = SessionLocal()
+    try:
+        recipe = Recipe(
+            title=title,
+            description=payload.get("description"),
+            ingredients=payload.get("ingredients"),
+            instructions=payload.get("instructions"),
+        )
+        session.add(recipe)
+        session.commit()
+        session.refresh(recipe)
+        return jsonify(ok=True, recipe=_serialize_recipe(recipe)), 201
+    except SQLAlchemyError as exc:
+        session.rollback()
+        logger.exception("Failed to create recipe")
+        return jsonify(ok=False, error=str(exc)), 500
+    finally:
+        session.close()
+
+
+@recipe_api.route("", methods=["GET"])
+def list_recipes() -> Any:
+    session: Session = SessionLocal()
+    try:
+        recipes = session.query(Recipe).order_by(Recipe.created_at.desc()).all()
+        return jsonify(ok=True, recipes=[_serialize_recipe(r) for r in recipes])
+    except SQLAlchemyError as exc:
+        logger.exception("Failed to list recipes")
+        return jsonify(ok=False, error=str(exc)), 500
+    finally:
+        session.close()
+
+
+@recipe_api.route("/<int:recipe_id>", methods=["GET"])
+def get_recipe(recipe_id: int) -> Any:
+    session: Session = SessionLocal()
+    try:
+        recipe = session.get(Recipe, recipe_id)
+        if not recipe:
+            return jsonify(ok=False, error="Recipe not found"), 404
+        return jsonify(ok=True, recipe=_serialize_recipe(recipe))
+    except SQLAlchemyError as exc:
+        logger.exception("Failed to fetch recipe")
+        return jsonify(ok=False, error=str(exc)), 500
+    finally:
+        session.close()
+
+
+@recipe_api.route("/<int:recipe_id>", methods=["PUT"])
+def update_recipe(recipe_id: int) -> Any:
+    payload = _collect_payload()
+    if not payload:
+        return jsonify(ok=False, error="No updates provided"), 400
+
+    session: Session = SessionLocal()
+    try:
+        recipe = session.get(Recipe, recipe_id)
+        if not recipe:
+            return jsonify(ok=False, error="Recipe not found"), 404
+        _apply_recipe_updates(recipe, payload)
+        session.commit()
+        session.refresh(recipe)
+        return jsonify(ok=True, recipe=_serialize_recipe(recipe))
+    except SQLAlchemyError as exc:
+        session.rollback()
+        logger.exception("Failed to update recipe")
+        return jsonify(ok=False, error=str(exc)), 500
+    finally:
+        session.close()
+
+
+@recipe_api.route("/<int:recipe_id>", methods=["DELETE"])
+def delete_recipe(recipe_id: int) -> Any:
+    session: Session = SessionLocal()
+    try:
+        recipe = session.get(Recipe, recipe_id)
+        if not recipe:
+            return jsonify(ok=False, error="Recipe not found"), 404
+        session.delete(recipe)
+        session.commit()
+        return jsonify(ok=True)
+    except SQLAlchemyError as exc:
+        session.rollback()
+        logger.exception("Failed to delete recipe")
+        return jsonify(ok=False, error=str(exc)), 500
+    finally:
+        session.close()

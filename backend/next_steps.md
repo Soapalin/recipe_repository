@@ -55,9 +55,16 @@ https://api.yourdomain.com/health
 
 
 TODO:
-[] Get API token for personal use and add support to it to backend
+[x] Get API token for personal use and add support to it to backend
 [] n8n sort out how to extract the recipe with AI
-[] add postgresql to the backend
-[] create frontend that shows all recipes
+[x] add postgresql to the backend
+[x] create frontend that shows all recipes
+[x] serve images using Caddy
 
+
+NEXT STEPS:
+
+```
+docker run -it --rm cloudflare/cloudflared:latest tunnel route dns recipe-app recipe.domain.com
+```
 
