@@ -1,8 +1,9 @@
-tunnel: f1e046f3-8fbe-4fab-89b6-def763684ec7
+tunnel: TUNNEL_ID
 credentials-file: /etc/cloudflared/credentials.json
 
 ingress:
   - hostname: recipe.lucientran.com
     service: http://caddy:80
+
 
   - service: http_status:404
