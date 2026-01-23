@@ -8,6 +8,8 @@ class Recipe(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(Text, nullable=False)
+    url = Column(Text, nullable=True)
+    author = Column(Text, nullable=True)
     description = Column(Text, nullable=True)
     ingredients = Column(Text, nullable=True)
     instructions = Column(Text, nullable=True)
