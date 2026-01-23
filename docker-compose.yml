@@ -35,14 +35,14 @@ services:
       - ./frontend/Caddyfile:/etc/caddy/Caddyfile:ro
     restart: unless-stopped
 
-  # cloudflared:
-  #   image: cloudflare/cloudflared:latest
-  #   command: tunnel --config /etc/cloudflared/config.yml run
-  #   volumes:
-  #     - ./backend/cloudflared:/etc/cloudflared
-  #   depends_on:
-  #     - backend
-  #   restart: unless-stopped
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./backend/cloudflared:/etc/cloudflared
+    depends_on:
+      - backend
+    restart: unless-stopped
 
 volumes:
   postgres_data:
