@@ -28,7 +28,7 @@ services:
     image: caddy:alpine
     container_name: recipe_caddy
     ports:
-      - "8080:80"
+      - "8080:8080"
     volumes:
       - ./frontend/app:/srv/app:ro
       - ./frontend/images:/srv/images:ro
@@ -39,9 +39,10 @@ services:
     image: cloudflare/cloudflared:latest
     command: tunnel --config /etc/cloudflared/config.yml run
     volumes:
-      - ./backend/cloudflared:/etc/cloudflared
+      - ./cloudflared:/etc/cloudflared
     depends_on:
       - backend
+      - caddy
     restart: unless-stopped
 
 volumes:

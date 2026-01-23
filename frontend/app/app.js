@@ -1,4 +1,4 @@
-const imageBase = "/images";
+// const imageBase = "/images";
 const backendUrl = "https://recipe.lucientran.com/api/recipe";
 
 const listView = document.getElementById("listView");
@@ -57,7 +57,7 @@ function renderList(recipes) {
     });
 
     card.innerHTML = `
-      <img class="recipe-thumb" src="${imageBase}/${recipe.image}" alt="${recipe.title}" />
+      <img class="recipe-thumb" src="${recipe.image}" alt="${recipe.title}" />
       <h3 class="card-title">${recipe.title}</h3>
       <p class="card-author">By ${recipe.author}</p>
       <p class="card-summary">${recipe.summary}</p> 
@@ -86,7 +86,7 @@ function openDetail(recipe) {
 
   detailCard.innerHTML = `
     <div class="detail-header">
-      <img src="${imageBase}/${recipe.image}" alt="${recipe.title}" />
+      <img src="${recipe.image}" alt="${recipe.title}" />
       <div class="detail-meta">
         <h3>${recipe.title}</h3>
         <p class="detail-author">By ${recipe.author}</p>

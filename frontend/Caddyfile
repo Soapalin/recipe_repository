@@ -1,4 +1,4 @@
-:80 {
+:8080 {
   handle_path /api* {
     reverse_proxy backend:9998
   }
@@ -9,8 +9,9 @@
     header Cache-Control "public, max-age=3600"
   }
 
-  handle {
-    root * /srv/app
-    file_server
-  }
+   handle {
+     root * /srv/app
+     file_server
+     header Cache-Control "no-cache"
+   }
 }

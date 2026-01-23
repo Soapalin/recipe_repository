@@ -29,7 +29,7 @@ limiter.limit("30 per hour")(recipe_api)
 FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN")
 CORS(
     app,
-    resources={r"/": {"origins": [FRONTEND_ORIGIN]}},
+    resources={r"/": {"origins": [FRONTEND_ORIGIN, "http://localhost:8080"]}},
     supports_credentials=False,
 )
 
