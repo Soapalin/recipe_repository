@@ -2,10 +2,7 @@ tunnel: 916b4f0b-433b-4ea4-b053-be4fc2277d14
 credentials-file: /etc/cloudflared/credentials.json
 
 ingress:
-  - hostname: api.lucientran.com
-    service: http://192.168.5.80:9998
-
   - hostname: recipe.lucientran.com
-    service: http://192.168.5.80:9997
+    service: http://caddy:80
 
   - service: http_status:404
