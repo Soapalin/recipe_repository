@@ -11,6 +11,8 @@ class Recipe(Base):
     url = Column(Text, nullable=True)
     author = Column(Text, nullable=True)
     description = Column(Text, nullable=True)
+    time_taken = Column(Integer, nullable=True)# in minutes
+    servings = Column(Integer, nullable=True)
     ingredients = Column(Text, nullable=True)
     instructions = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
