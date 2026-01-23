@@ -2,16 +2,17 @@ from urllib.parse import urlparse
 from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
 import requests
-
+import hmac
 from typing import Any, Dict
 from dotenv import load_dotenv
 
-from schema.recipe import RecipeSchema
+# from schema.recipe import RecipeSchema
 load_dotenv()
 import os
 
 FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN")
 N8N_WEBHOOK_URL = os.getenv("N8N_URL")
+SHORTCUTS_API_TOKEN = os.getenv("SHORTCUTS_API_TOKEN")
 
 
 import logging
@@ -39,7 +40,6 @@ def _collect_payload() -> Dict[str, Any]:
 
     return {}
 
-
 def _is_allowed_origin(value: str) -> bool:
     try:
         parsed = urlparse(value)
@@ -47,7 +47,6 @@ def _is_allowed_origin(value: str) -> bool:
         return origin == FRONTEND_ORIGIN
     except Exception:
         return False
-
 
 def _enforce_origin() -> None:
     origin = request.headers.get("Origin")
@@ -63,13 +62,31 @@ def _enforce_origin() -> None:
         if not _is_allowed_origin(referer):
             raise PermissionError("Referer not allowed")
         return
-
     raise PermissionError("Missing Origin/Referer")
+
+
+def _require_bearer_token() -> None:
+    if not SHORTCUTS_API_TOKEN:
+        raise RuntimeError("SHORTCUTS_API_TOKEN is not configured")
+
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        raise PermissionError("Missing Bearer token")
+
+    token = auth_header.removeprefix("Bearer ").strip()
+    if not hmac.compare_digest(token, SHORTCUTS_API_TOKEN):
+        raise PermissionError("Invalid Bearer token")
 
 
 @recipe_api.route("/share", methods=["POST"])
 def share() -> Any:
-    
+    try:
+        _require_bearer_token()
+    except PermissionError as exc:
+        return jsonify(ok=False, error=str(exc)), 401
+    except RuntimeError as exc:
+        return jsonify(ok=False, error=str(exc)), 500
+
     payload = _collect_payload()
     logging.info("Received payload: %s, %s", payload, type(payload))
 
