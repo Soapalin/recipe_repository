@@ -1,10 +1,44 @@
-const imageBase = window.RECIPE_IMAGE_BASE || "/images";
+const imageBase = "/images";
+const backendUrl = "https://recipe.lucientran.com/api/recipe";
 
 const listView = document.getElementById("listView");
 const detailView = document.getElementById("detailView");
 const recipeList = document.getElementById("recipeList");
 const detailCard = document.getElementById("detailCard");
 const backButton = document.getElementById("backButton");
+
+function transformRecipe(backendRecipe) {
+  // Parse ingredients from text to array
+  const ingredients = backendRecipe.ingredients
+    ? backendRecipe.ingredients.split('\n').map(item => item.trim()).filter(item => item)
+    : [];
+
+  // Parse instructions from text to array
+  const steps = backendRecipe.instructions
+    ? backendRecipe.instructions.split('\n').map(step => step.trim()).filter(step => step)
+    : [];
+
+  // Convert time_taken to time string
+  const time = backendRecipe.time_taken ? `${backendRecipe.time_taken} min` : "";
+
+  // Use img_path as image filename, or generate default
+  const image = backendRecipe.img_path || `recipe-${backendRecipe.id}.svg`;
+
+  return {
+    id: backendRecipe.id.toString(),
+    title: backendRecipe.title,
+    author: backendRecipe.author || "Unknown",
+    url: backendRecipe.url,
+    summary: backendRecipe.description || "",
+    time,
+    servings: backendRecipe.servings || 4,
+    tags: [], // Not available in backend format
+    image,
+    ingredients,
+    steps,
+    notes: backendRecipe.description || ""
+  };
+}
 
 function renderList(recipes) {
   recipeList.innerHTML = "";
@@ -26,7 +60,7 @@ function renderList(recipes) {
       <img class="recipe-thumb" src="${imageBase}/${recipe.image}" alt="${recipe.title}" />
       <h3 class="card-title">${recipe.title}</h3>
       <p class="card-author">By ${recipe.author}</p>
-      <p class="card-summary">${recipe.summary}</p>
+      <p class="card-summary">${recipe.summary}</p> 
       ${
         recipe.url
           ? `<a class="card-link" href="${recipe.url}" target="_blank" rel="noopener">${recipe.url}<span class="link-icon" aria-hidden="true">
@@ -103,9 +137,16 @@ backButton.addEventListener("click", () => {
   listView.style.display = "block";
 });
 
-fetch("data.json")
+fetch(backendUrl)
   .then((response) => response.json())
-  .then((recipes) => renderList(recipes))
+  .then((data) => {
+    if (data.ok && data.recipes) {
+      const recipes = data.recipes.map(transformRecipe);
+      renderList(recipes);
+    } else {
+      recipeList.innerHTML = "<p>Unable to load recipes.</p>";
+    }
+  })
   .catch(() => {
     recipeList.innerHTML = "<p>Unable to load recipes.</p>";
   });
